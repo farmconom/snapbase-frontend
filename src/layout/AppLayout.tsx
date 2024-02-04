@@ -10,11 +10,11 @@ export default function AppLayout() {
   return (
     <>
       <Navbar />
-      <div className="flex items-start pt-[50px] sm:pt-[55px] md:pt-[60px] h-screen">
+      <div className="flex items-start">
         <main
           id="app-main"
           className={classNames(
-            'overflow-y-auto relative w-full h-full bg-gray-200 dark:bg-gray-900 pt-[1.5rem] sm:py-[2rem] px-0 sm:px-[16px] lg:px-[2rem]',
+            'overflow-y-auto relative w-full h-full bg-gray-200 dark:bg-gray-900 pt-[1.5rem] sm:py-[2rem] px-0 sm:px-[16px] lg:px-[2rem]'
           )}>
           <div className="min-h-[82vh] md:max-w-[700px] lg:max-w-[1100px] mx-auto">
             <Outlet />

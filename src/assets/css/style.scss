@@ -1,9 +1,11 @@
-$font-main: "Noto Sans Thai", "Open Sans", sans-serif;
-$font-sub: "Fjalla One", "Open Sans", sans-serif;
+$font-main: 'Noto Sans Thai', 'Open Sans', sans-serif;
+$font-sub: 'Fjalla One', 'Open Sans', sans-serif;
 
 body {
   line-height: inherit;
   font-family: $font-main;
+  margin: 0;
+  padding: 0;
 }
 
 .font-family-main {
@@ -12,20 +14,6 @@ body {
 
 .font-family-sub {
   font-family: $font-sub;
-}
-
-// remove arrow number input
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-input[type="number"] {
-  appearance: textfield;
-  -moz-appearance: textfield;
 }
 
 // scrollbar
@@ -48,3 +36,7 @@ input[type="number"] {
   background-color: #d1d5db; /* For Opera */
 }
 // end - scrollbar
+
+.sign-out-menu span {
+  color: #f05252;
+}
