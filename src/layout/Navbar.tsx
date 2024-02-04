@@ -1,8 +1,7 @@
 import { type FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { defaultImages } from '../constant/default-images.ts';
-import { MdHistory, MdLogout } from 'react-icons/md';
-import { PiReceipt, PiUserCircleFill } from 'react-icons/pi';
+import { MdLogout } from 'react-icons/md';
 import SignOutModal from '../component/navbar/SignOutModal.tsx';
 import Logo from '../assets/icon/Logo.tsx';
 import { useDispatch, useSelector } from '../redux/index.ts';
@@ -50,33 +49,15 @@ const AppNavbar: FC = function () {
                     />
                   </div>
                 </MenuButton>
-                <Menu>
-                  <div className="pt-3">
-                    <span className="flex gap-2 items-center text-sm mt-1 font-semibold">
+                <Menu className="bg-black text-white p-3 rounded-md !top-2 !-left-2">
+                  <div>
+                    <span className="flex gap-2 items-center text-sm font-semibold">
                       John Deep
                     </span>
                   </div>
 
                   <MenuItem
-                    className="flex gap-2 text-gray-700 font-normal"
-                    onClick={() => onRedirect('/profile')}>
-                    <PiUserCircleFill className="text-[20px] text-[#6B7280]" />
-                    Profile
-                  </MenuItem>
-                  <MenuItem
-                    className="flex gap-2 text-gray-700 font-normal"
-                    onClick={() => onRedirect('/purchase')}>
-                    <PiReceipt className="text-[20px] text-[#6B7280]" />
-                    Purchase
-                  </MenuItem>
-                  <MenuItem
-                    className="flex gap-2 text-gray-700 font-normal"
-                    onClick={() => onRedirect('/history')}>
-                    <MdHistory className="text-[20px] text-[#6B7280]" />
-                    History
-                  </MenuItem>
-                  <MenuItem
-                    className="text-red-600 gap-2 flex items-center pb-3"
+                    className="text-red-600 hover:text-red-500 transition gap-2 flex items-center cursor-pointer mt-3"
                     onClick={() => setOpenSignOutModal(true)}>
                     <MdLogout className="w-[20px] h-[20px]" />
                     Disconnect
