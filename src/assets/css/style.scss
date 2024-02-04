@@ -1,0 +1,50 @@
+$font-main: "Noto Sans Thai", "Open Sans", sans-serif;
+$font-sub: "Fjalla One", "Open Sans", sans-serif;
+
+body {
+  line-height: inherit;
+  font-family: $font-main;
+}
+
+.font-family-main {
+  font-family: $font-main;
+}
+
+.font-family-sub {
+  font-family: $font-sub;
+}
+
+// remove arrow number input
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+// scrollbar
+/* For Firefox, Edge, and Opera */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #eaeaea;
+  -ms-overflow-style: none; /* For Edge */
+}
+
+*::-webkit-scrollbar-track-piece {
+  background-color: #eaeaea; /* For Opera */
+}
+
+*::-webkit-scrollbar-thumb:vertical {
+  background-color: #d1d5db; /* For Opera */
+}
+
+*::-webkit-scrollbar-thumb:horizontal {
+  background-color: #d1d5db; /* For Opera */
+}
+// end - scrollbar
