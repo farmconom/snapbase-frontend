@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from '../redux/index.ts';
 import { initializeAccountSuccess } from '../redux/account.ts';
 import Button from '@mui/material/Button';
 import UserMenu from './UserMenu.tsx';
+import { FaUser } from 'react-icons/fa6';
 
 const AppNavbar: FC = function () {
   const [openSignOutModal, setOpenSignOutModal] = useState(false);
@@ -32,17 +33,17 @@ const AppNavbar: FC = function () {
           <div className="flex items-center gap-3 md:gap-3 z-[2]">
             {isSignIn ? (
               <>
-                <UserMenu />
+                <UserMenu onOpenSignOutModal={setOpenSignOutModal} />
               </>
             ) : (
               <>
                 <Button
                   variant="contained"
-                  className="h-[32px]"
+                  className="h-[32px] !min-w-[120px]"
                   onClick={() =>
                     dispatch(initializeAccountSuccess({ isSignIn: true }))
                   }>
-                  Sign in
+                  <FaUser className="me-2" /> Sign in
                 </Button>
               </>
             )}
