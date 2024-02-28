@@ -38,14 +38,14 @@ export default function AfterSignUpModal({
       open={openModal}
       onClose={() => setOpenModal(false)}
       aria-labelledby="responsive-dialog-title">
-      <DialogTitle id="responsive-dialog-title">
-        <div className="p-0 border-0 !text-2xl text-center !font-bold text-green-500 ms-[-10px]">
-          <FaRegCheckCircle className="mb-[-3px]" /> SUCCESS
-        </div>
+      <DialogTitle
+        id="responsive-dialog-title"
+        className="!text-2xl !font-bold !text-green-500 !ms-[-10px] text-center">
+        <FaRegCheckCircle className="mb-[-3px]" /> SUCCESS
       </DialogTitle>
       <DialogContent>
         <DialogContentText>
-          <div className="p-0 border-0 text-center flex flex-col gap-4">
+          <span className="p-0 border-0 text-center flex flex-col gap-4">
             <span>
               🎉 You've successfully signed up and joined our community! 🎉
             </span>
@@ -54,13 +54,16 @@ export default function AfterSignUpModal({
               thrilled to have you here and can't wait to see what amazing
               experiences we'll share together. 🚀🚀
             </span>
+            <span
+              className="w-full"
+              style={{ border: '0.5px solid #d1d5db' }}
+            />
             <span className="text-green-500">
-              <hr className="mb-4" style={{ border: '0.5px solid #d1d5db' }} />
               Please check your email for further instructions. We've sent you a
               confirmation message to verify your account. If you don't see the
               email in your inbox, be sure to check your spam folder.
             </span>
-          </div>
+          </span>
         </DialogContentText>
       </DialogContent>
       <DialogActions style={{ padding: '16px 24px' }}>

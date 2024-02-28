@@ -10,6 +10,17 @@ import React from 'react';
 import Slide, { SlideProps } from '@mui/material/Slide';
 import TextField from '@mui/material/TextField';
 import { DialogContentText } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from 'firebase/auth';
+import { auth } from '../../firebase';
+import { Logger } from '../../helper/logger';
+import { toast } from 'react-toastify';
+import GenerateErrorText from '../@share/errorText';
+
+const log = new Logger('SignUpModal');
 
 type Props = {
   openModal: boolean;
@@ -36,13 +47,52 @@ export default function SignUpModal({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorText, setErrorText] = useState('none');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = () => {
-    console.log(email);
-    console.log(password);
-    console.log(confirmPassword);
-    setOpenModal(false);
-    setOpenAfterSignUpModal(true);
+  const handleSubmit = async () => {
+    if (checkPassword()) return;
+    try {
+      setIsLoading(true);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      console.log(userCredential);
+      const user = userCredential.user;
+      const idToken = await user.getIdToken();
+      if (user && idToken) {
+        await sendEmailVerification(user);
+        await auth.signOut();
+        setOpenModal(false);
+        setOpenAfterSignUpModal(true);
+      } else {
+        toast.error(`Something's wrong, Please try again.`);
+      }
+    } catch (error) {
+      log.error(error);
+      if (String(error).includes('auth/email-already-in-use')) {
+        setErrorText(`This Email is already in use`);
+      } else {
+        toast.error(`Something's wrong, Please try again.`);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const checkPassword = () => {
+    if (password.length < 6) {
+      setErrorText('Password should be at least 6 characters');
+      return true;
+    } else if (password !== confirmPassword) {
+      setErrorText('Passwords do not match');
+      return true;
+    } else {
+      setErrorText('none');
+      return false;
+    }
   };
 
   return (
@@ -101,8 +151,8 @@ export default function SignUpModal({
           fullWidth
           variant="standard"
         />{' '}
-        <DialogContentText className="!mt-2 !text-sm text-red-500">
-          error
+        <DialogContentText className="w-full flex items-start">
+          <GenerateErrorText text={errorText} onShow={errorText !== 'none'} />
         </DialogContentText>
         <DialogContentText className="!mt-8 !text-sm flex flex-wrap gap-1 justify-center items-center">
           <span>Already have an account?</span>
@@ -121,16 +171,22 @@ export default function SignUpModal({
           <Button
             variant="text"
             color="secondary"
+            disabled={isLoading}
             className="min-w-[100px] h-[40px] m-0 w-full sm:w-auto"
             onClick={() => setOpenModal(false)}>
             Cancel
           </Button>
           <Button
             variant="contained"
+            disabled={isLoading}
             color="success"
-            className="min-w-[100px] h-[40px] m-0 w-full sm:w-auto"
+            className="!min-w-[100px] h-[40px] m-0 w-full sm:w-auto"
             type="submit">
-            Submit
+            {isLoading ? (
+              <CircularProgress size="24px" color="inherit" />
+            ) : (
+              'Submit'
+            )}
           </Button>{' '}
         </div>
       </DialogActions>
