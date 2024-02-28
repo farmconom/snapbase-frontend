@@ -38,16 +38,17 @@ export default function SignOutModal({ openModal, setOpenModal }: Props) {
       fullWidth={onResponsive}
       TransitionComponent={Transition}
       open={openModal}
+      classes={{ paper: 'min-w-[260px]' }}
       onClose={() => setOpenModal(false)}
       aria-labelledby="responsive-dialog-title">
       <DialogTitle id="responsive-dialog-title">
-        <div className="items-center p-0 border-0 !text-2xl justify-center text-center !font-bold text-red-500">
-          Sign out
+        <div className="p-0 border-0 !text-2xl text-center !font-bold text-red-500">
+          SIGN OUT
         </div>
       </DialogTitle>
       <DialogContent>
         <DialogContentText>
-          <div className="items-center p-0 border-0 justify-center text-center">
+          <div className="p-0 border-0 text-center">
             Do you want to sign out ?
           </div>
         </DialogContentText>
@@ -55,7 +56,7 @@ export default function SignOutModal({ openModal, setOpenModal }: Props) {
       <DialogActions style={{ padding: '16px 24px' }}>
         <div className="flex flex-wrap w-full justify-center gap-2 border-0 !p-0">
           <Button
-            variant="outlined"
+            variant="text"
             className="min-w-[100px] h-[40px] m-0 w-full"
             onClick={() => setOpenModal(false)}>
             Not now

@@ -1,18 +1,20 @@
 import { type FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SignOutModal from '../component/navbar/SignOutModal.tsx';
+import SignOutModal from '../component/auth/SignOutModal.tsx';
 import Logo from '../assets/icon/Logo.tsx';
-import { useDispatch, useSelector } from '../redux/index.ts';
-import { initializeAccountSuccess } from '../redux/account.ts';
+import { useSelector } from '../redux/index.ts';
 import Button from '@mui/material/Button';
 import UserMenu from './UserMenu.tsx';
 import { FaUser } from 'react-icons/fa6';
+import SignInModal from '../component/auth/SignInModal.tsx';
+import SignUpModal from '../component/auth/SignUpModal.tsx';
 
 const AppNavbar: FC = function () {
   const [openSignOutModal, setOpenSignOutModal] = useState(false);
+  const [openSignInModal, setOpenSignInModal] = useState(false);
+  const [openSignUpModal, setOpenSignUpModal] = useState(false);
   const navigate = useNavigate();
   const { isSignIn } = useSelector(state => state.account);
-  const dispatch = useDispatch();
 
   const onRedirect = (url: string) => {
     navigate(url);
@@ -25,7 +27,7 @@ const AppNavbar: FC = function () {
           <div className="flex items-center z-[2]">
             <div
               onClick={() => onRedirect('/')}
-              className="cursor-pointer hidden md:block h-[32px]">
+              className="cursor-pointer hidden sm:block h-[32px]">
               <Logo />
             </div>
           </div>
@@ -40,9 +42,7 @@ const AppNavbar: FC = function () {
                 <Button
                   variant="contained"
                   className="h-[32px] !min-w-[120px]"
-                  onClick={() =>
-                    dispatch(initializeAccountSuccess({ isSignIn: true }))
-                  }>
+                  onClick={() => setOpenSignInModal(true)}>
                   <FaUser className="me-2" /> Sign in
                 </Button>
               </>
@@ -53,6 +53,16 @@ const AppNavbar: FC = function () {
       <SignOutModal
         openModal={openSignOutModal}
         setOpenModal={setOpenSignOutModal}
+      />
+      <SignInModal
+        openModal={openSignInModal}
+        setOpenModal={setOpenSignInModal}
+        setOpenSignUpModal={setOpenSignUpModal}
+      />
+      <SignUpModal
+        openModal={openSignUpModal}
+        setOpenModal={setOpenSignUpModal}
+        setOpenSignInModal={setOpenSignInModal}
       />
     </>
   );

@@ -175,6 +175,9 @@ module.exports = {
         '2․5': '10px',
         '3․5': '14px',
       },
+      screens: {
+        sm: '600px',
+      },
       container: {
         xs: '320px',
         sm: '599px',
