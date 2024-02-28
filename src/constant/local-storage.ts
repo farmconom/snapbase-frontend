@@ -1,4 +1,4 @@
-const prefix = 'fluxfolio';
+const prefix = 'snapbase';
 
 export const tokenKey = {
   accessToken: `${prefix}__access_token`,

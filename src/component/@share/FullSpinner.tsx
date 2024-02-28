@@ -1,4 +1,4 @@
-import { ProgressSpinner } from 'primereact/progressspinner';
+import CircularProgress from '@mui/material/CircularProgress';
 
 type props = {
   isInPage?: boolean;
@@ -10,7 +10,7 @@ export default function FullSpinner({ isInPage }: props) {
         (isInPage ? 'min-h-[82vh]' : 'min-h-[100vh]') +
         ' flex items-center justify-center'
       }>
-      <ProgressSpinner />{' '}
+      <CircularProgress />{' '}
     </div>
   );
 }

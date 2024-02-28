@@ -4,7 +4,7 @@ export default function Home() {
       <div className="hero-main rounded-none sm:rounded-[12px] px-[24px] pt-[24px] pb-[32px] flex justify-center items-center flex-col max-sm:mt-[-19px]">
         <h3 className="text-white text-center text-[28px] md:text-[36px] font-bold mb-4">
           Welcome to
-          <br className="d-block sm:hidden" /> <span>FluxFolio</span>
+          <br className="d-block sm:hidden" /> <span>SnapBase</span>
         </h3>
         <p className="text-white font-normal text-sm sm:text-base text-center">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores
