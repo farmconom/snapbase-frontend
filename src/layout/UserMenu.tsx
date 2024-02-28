@@ -42,9 +42,27 @@ export default function UserMenu({ onOpenSignOutModal }: Props) {
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}>
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={() => onOpenSignOutModal(true)}>Sign out</MenuItem>
+        <MenuItem
+          disabled
+          style={{
+            borderBottom: '1px solid #9ca3af',
+            paddingBottom: '12px',
+            marginBottom: '6px',
+          }}
+          className="!min-h-0">
+          User Name
+        </MenuItem>
+        <MenuItem onClick={handleClose} className="!min-h-0">
+          Profile
+        </MenuItem>
+        <MenuItem onClick={handleClose} className="!min-h-0">
+          My account
+        </MenuItem>
+        <MenuItem
+          onClick={() => onOpenSignOutModal(true)}
+          className="!text-red-500 !min-h-0">
+          Sign out
+        </MenuItem>
       </Menu>
     </div>
   );

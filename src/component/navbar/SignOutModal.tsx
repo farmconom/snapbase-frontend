@@ -9,11 +9,19 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import React from 'react';
+import Slide, { SlideProps } from '@mui/material/Slide';
 
 type Props = {
   openModal: boolean;
   setOpenModal: Dispatch<SetStateAction<boolean>>;
 };
+
+const Transition = React.forwardRef<HTMLDivElement, SlideProps>(
+  function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  }
+);
 
 export default function SignOutModal({ openModal, setOpenModal }: Props) {
   const dispatch = useDispatch();
@@ -23,11 +31,12 @@ export default function SignOutModal({ openModal, setOpenModal }: Props) {
     setOpenModal(false);
   };
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const onResponsive = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <Dialog
-      fullScreen={fullScreen}
+      fullWidth={onResponsive}
+      TransitionComponent={Transition}
       open={openModal}
       onClose={() => setOpenModal(false)}
       aria-labelledby="responsive-dialog-title">
@@ -37,21 +46,26 @@ export default function SignOutModal({ openModal, setOpenModal }: Props) {
         </div>
       </DialogTitle>
       <DialogContent>
-        <DialogContentText>Do you want to sign out ? </DialogContentText>
+        <DialogContentText>
+          <div className="items-center p-0 border-0 justify-center text-center">
+            Do you want to sign out ?
+          </div>
+        </DialogContentText>
       </DialogContent>
-      <DialogActions>
-        <div className="flex flex-wrap justify-center gap-2 border-0 !p-0">
+      <DialogActions style={{ padding: '16px 24px' }}>
+        <div className="flex flex-wrap w-full justify-center gap-2 border-0 !p-0">
           <Button
-            variant="contained"
-            className="min-w-[100px] h-[40px] m-0"
+            variant="outlined"
+            className="min-w-[100px] h-[40px] m-0 w-full"
             onClick={() => setOpenModal(false)}>
             Not now
           </Button>
           <Button
             variant="contained"
-            className="min-w-[100px] h-[40px] m-0"
+            color="error"
+            className="min-w-[100px] h-[40px] m-0 w-full"
             onClick={() => onSignOut()}>
-            Sign out
+            Confirm
           </Button>{' '}
         </div>
       </DialogActions>

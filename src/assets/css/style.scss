@@ -40,3 +40,15 @@ body {
 .sign-out-menu span {
   color: #f05252;
 }
+
+.MuiDialog-paperFullWidth {
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+// window sm size
+@media screen and (max-width: 599px) {
+  .MuiDialog-container {
+    align-items: flex-end !important;
+  }
+}
