@@ -76,7 +76,7 @@ export default function SignInModal({
           id="password"
           name="password"
           label="Password"
-          type="text"
+          type="password"
           fullWidth
           variant="standard"
         />{' '}

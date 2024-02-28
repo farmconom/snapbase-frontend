@@ -15,6 +15,7 @@ type Props = {
   openModal: boolean;
   setOpenModal: Dispatch<SetStateAction<boolean>>;
   setOpenSignInModal: Dispatch<SetStateAction<boolean>>;
+  setOpenAfterSignUpModal: Dispatch<SetStateAction<boolean>>;
 };
 
 const Transition = React.forwardRef<HTMLDivElement, SlideProps>(
@@ -27,6 +28,7 @@ export default function SignUpModal({
   openModal,
   setOpenModal,
   setOpenSignInModal,
+  setOpenAfterSignUpModal,
 }: Props) {
   const theme = useTheme();
   const onResponsive = useMediaQuery(theme.breakpoints.down('sm'));
@@ -39,6 +41,8 @@ export default function SignUpModal({
     console.log(email);
     console.log(password);
     console.log(confirmPassword);
+    setOpenModal(false);
+    setOpenAfterSignUpModal(true);
   };
 
   return (
@@ -47,7 +51,14 @@ export default function SignUpModal({
       TransitionComponent={Transition}
       open={openModal}
       onClose={() => setOpenModal(false)}
-      aria-labelledby="responsive-dialog-title">
+      aria-labelledby="responsive-dialog-title"
+      PaperProps={{
+        component: 'form',
+        onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+          event.preventDefault();
+          handleSubmit();
+        },
+      }}>
       <DialogTitle id="responsive-dialog-title" className="!pb-[12px]">
         <div className="p-0 border-0 !text-2xl text-center !font-bold">
           SIGN UP
@@ -90,6 +101,9 @@ export default function SignUpModal({
           fullWidth
           variant="standard"
         />{' '}
+        <DialogContentText className="!mt-2 !text-sm text-red-500">
+          error
+        </DialogContentText>
         <DialogContentText className="!mt-8 !text-sm flex flex-wrap gap-1 justify-center items-center">
           <span>Already have an account?</span>
           <span
@@ -115,7 +129,7 @@ export default function SignUpModal({
             variant="contained"
             color="success"
             className="min-w-[100px] h-[40px] m-0 w-full sm:w-auto"
-            onClick={() => handleSubmit()}>
+            type="submit">
             Submit
           </Button>{' '}
         </div>

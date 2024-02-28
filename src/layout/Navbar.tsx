@@ -8,11 +8,13 @@ import UserMenu from './UserMenu.tsx';
 import { FaUser } from 'react-icons/fa6';
 import SignInModal from '../component/auth/SignInModal.tsx';
 import SignUpModal from '../component/auth/SignUpModal.tsx';
+import AfterSignUpModal from '../component/auth/AfterSignUpModal.tsx';
 
 const AppNavbar: FC = function () {
   const [openSignOutModal, setOpenSignOutModal] = useState(false);
   const [openSignInModal, setOpenSignInModal] = useState(false);
   const [openSignUpModal, setOpenSignUpModal] = useState(false);
+  const [openAfterSignUpModal, setOpenAfterSignUpModal] = useState(false);
   const navigate = useNavigate();
   const { isSignIn } = useSelector(state => state.account);
 
@@ -62,6 +64,12 @@ const AppNavbar: FC = function () {
       <SignUpModal
         openModal={openSignUpModal}
         setOpenModal={setOpenSignUpModal}
+        setOpenSignInModal={setOpenSignInModal}
+        setOpenAfterSignUpModal={setOpenAfterSignUpModal}
+      />
+      <AfterSignUpModal
+        openModal={openAfterSignUpModal}
+        setOpenModal={setOpenAfterSignUpModal}
         setOpenSignInModal={setOpenSignInModal}
       />
     </>

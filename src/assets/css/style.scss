@@ -46,6 +46,13 @@ body {
   width: 100% !important;
 }
 
+.MuiInput-input {
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
 // window sm size
 @media screen and (max-width: 599px) {
   .MuiDialog-container {

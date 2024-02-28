@@ -11,5 +11,8 @@ export const themeMUI = createTheme({
     secondary: {
       main: '#6b7280',
     },
+    success: {
+      main: '#0e9f6e',
+    },
   },
 });
