@@ -17,22 +17,6 @@ const AppNavbar: FC = function () {
     navigate(url);
   };
 
-  // const userMenu = useRef<Menu | null>(null);
-  // const items: MenuItem[] = [
-  //   {
-  //     className: 'py-2',
-  //     label: 'John Deep',
-  //     items: [
-  //       {
-  //         className: 'sign-out-menu',
-  //         label: 'Sign out',
-  //         icon: 'pi pi-sign-out',
-  //         command: () => setOpenSignOutModal(true),
-  //       },
-  //     ],
-  //   },
-  // ];
-
   return (
     <>
       <div className="py-3 px-3 md:px-4 bg-[#142440] relative">
