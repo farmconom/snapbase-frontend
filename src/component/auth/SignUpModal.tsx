@@ -19,6 +19,7 @@ import { auth } from '../../firebase';
 import { Logger } from '../../helper/logger';
 import { toast } from 'react-toastify';
 import GenerateErrorText from '../@share/errorText';
+import { errorFormat } from '../../helper/error-format';
 
 const log = new Logger('SignUpModal');
 
@@ -27,6 +28,7 @@ type Props = {
   setOpenModal: Dispatch<SetStateAction<boolean>>;
   setOpenSignInModal: Dispatch<SetStateAction<boolean>>;
   setOpenAfterSignUpModal: Dispatch<SetStateAction<boolean>>;
+  emailOutput: Dispatch<SetStateAction<string>>;
 };
 
 const Transition = React.forwardRef<HTMLDivElement, SlideProps>(
@@ -40,6 +42,7 @@ export default function SignUpModal({
   setOpenModal,
   setOpenSignInModal,
   setOpenAfterSignUpModal,
+  emailOutput,
 }: Props) {
   const theme = useTheme();
   const onResponsive = useMediaQuery(theme.breakpoints.down('sm'));
@@ -47,7 +50,7 @@ export default function SignUpModal({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [errorText, setErrorText] = useState('none');
+  const [errorText, setErrorText] = useState(' ');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
@@ -59,23 +62,25 @@ export default function SignUpModal({
         email,
         password
       );
-      console.log(userCredential);
+      log.info('sign up userCredential', userCredential);
       const user = userCredential.user;
       const idToken = await user.getIdToken();
       if (user && idToken) {
         await sendEmailVerification(user);
         await auth.signOut();
+        emailOutput(email);
         setOpenModal(false);
         setOpenAfterSignUpModal(true);
       } else {
         toast.error(`Something's wrong, Please try again.`);
       }
     } catch (error) {
-      log.error(error);
-      if (String(error).includes('auth/email-already-in-use')) {
-        setErrorText(`This Email is already in use`);
+      const errorText: string = errorFormat(error).message;
+      log.error(errorText);
+      if (errorText.includes('auth/email-already-in-use')) {
+        setErrorText(`This email is already in use`);
       } else {
-        toast.error(`Something's wrong, Please try again.`);
+        toast.error(`Something's wrong, Please try again later.`);
       }
     } finally {
       setIsLoading(false);
@@ -90,7 +95,7 @@ export default function SignUpModal({
       setErrorText('Passwords do not match');
       return true;
     } else {
-      setErrorText('none');
+      setErrorText(' ');
       return false;
     }
   };
@@ -106,11 +111,14 @@ export default function SignUpModal({
         component: 'form',
         onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
           event.preventDefault();
-          handleSubmit();
+          setErrorText(' ');
+          setTimeout(() => {
+            handleSubmit();
+          }, 200);
         },
       }}>
       <DialogTitle id="responsive-dialog-title" className="!pb-[12px]">
-        <div className="p-0 border-0 !text-2xl text-center !font-bold">
+        <div className="p-0 border-0 !text-2xl text-center !font-bold !text-gray-800">
           SIGN UP
         </div>
       </DialogTitle>
@@ -152,10 +160,10 @@ export default function SignUpModal({
           variant="standard"
         />{' '}
         <DialogContentText className="w-full flex items-start">
-          <GenerateErrorText text={errorText} onShow={errorText !== 'none'} />
+          <GenerateErrorText text={errorText} onShow={errorText !== ' '} />
         </DialogContentText>
         <DialogContentText className="!mt-8 !text-sm flex flex-wrap gap-1 justify-center items-center">
-          <span>Already have an account?</span>
+          <span className="!text-gray-800">Already have an account?</span>
           <span
             onClick={() => {
               setOpenModal(false);
@@ -172,7 +180,7 @@ export default function SignUpModal({
             variant="text"
             color="secondary"
             disabled={isLoading}
-            className="min-w-[100px] h-[40px] m-0 w-full sm:w-auto"
+            className="!min-w-[100px] h-[40px] m-0 w-full sm:w-auto"
             onClick={() => setOpenModal(false)}>
             Cancel
           </Button>

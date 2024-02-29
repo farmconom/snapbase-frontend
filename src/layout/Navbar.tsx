@@ -15,6 +15,7 @@ const AppNavbar: FC = function () {
   const [openSignInModal, setOpenSignInModal] = useState(false);
   const [openSignUpModal, setOpenSignUpModal] = useState(false);
   const [openAfterSignUpModal, setOpenAfterSignUpModal] = useState(false);
+  const [emailSignUp, setEmailSignUp] = useState('');
   const navigate = useNavigate();
   const { isSignIn } = useSelector(state => state.account);
 
@@ -66,11 +67,13 @@ const AppNavbar: FC = function () {
         setOpenModal={setOpenSignUpModal}
         setOpenSignInModal={setOpenSignInModal}
         setOpenAfterSignUpModal={setOpenAfterSignUpModal}
+        emailOutput={setEmailSignUp}
       />
       <AfterSignUpModal
         openModal={openAfterSignUpModal}
         setOpenModal={setOpenAfterSignUpModal}
         setOpenSignInModal={setOpenSignInModal}
+        getEmail={emailSignUp}
       />
     </>
   );

@@ -5,6 +5,9 @@ import Loadable from '../component/@share/Loadable';
 // import Unauthorized from '../page/unauthorize/Unauthorized';
 
 const Home = Loadable(lazy(() => import('../page/home/Home')));
+const VerifyEmailPage = Loadable(
+  lazy(() => import('../page/auth/VerifyEmailPage'))
+);
 
 const Error404 = Loadable(lazy(() => import('../page/miscellaneous/Error404')));
 
@@ -18,6 +21,10 @@ const routes: RouteObject = {
         {
           path: '/',
           element: <Home />,
+        },
+        {
+          path: '/verifiedEmail',
+          element: <VerifyEmailPage />,
         },
         // {
         //   path: '/unauthorized',

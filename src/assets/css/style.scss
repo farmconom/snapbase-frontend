@@ -1,6 +1,17 @@
 $font-main: 'Noto Sans Thai', 'Open Sans', sans-serif;
 $font-sub: 'Fjalla One', 'Open Sans', sans-serif;
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span {
+  color: white;
+}
+
 body {
   line-height: inherit;
   font-family: $font-main;
@@ -36,10 +47,6 @@ body {
   background-color: #d1d5db; /* For Opera */
 }
 // end - scrollbar
-
-.sign-out-menu span {
-  color: #f05252;
-}
 
 .MuiDialog-paperFullWidth {
   margin: 0 !important;
