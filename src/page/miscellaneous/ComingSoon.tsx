@@ -1,4 +1,4 @@
-import NoneActiveFeature from "../../component/@share/NoneActiveFeature";
+import NoneActiveFeature from '../../component/@share/NoneActiveFeature';
 
 type Props = {
   title: string;

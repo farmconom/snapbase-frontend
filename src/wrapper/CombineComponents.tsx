@@ -10,6 +10,7 @@ export const CombineComponents = (
 ): FC<ChildrenProps> => {
   return components.reduce(
     (AccumulatedComponents, CurrentComponent) => {
+      // eslint-disable-next-line react/display-name
       return ({ children }): JSX.Element => {
         return (
           <AccumulatedComponents>

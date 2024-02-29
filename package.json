@@ -15,7 +15,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn prettier:check && yarn lint"
+      "pre-commit": "yarn pre-commit"
     }
   },
   "dependencies": {
@@ -53,6 +53,7 @@
     "@vitejs/plugin-react-swc": "^3.5.0",
     "eslint": "^8.0.1",
     "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-formatter-pretty": "^6.0.1",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
     "eslint-plugin-promise": "^6.0.0",
