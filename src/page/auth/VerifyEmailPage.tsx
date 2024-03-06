@@ -15,14 +15,20 @@ const VerifyEmailPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const oobCode = searchParams.get('oobCode');
     const apiKey = searchParams.get('apiKey');
+    const userEmail = searchParams.get('userEmail');
     const redirectTo = (url: string) => {
       url && navigate(url);
     };
+
+    if (userEmail) {
+      setEmail(userEmail);
+    }
 
     if (!oobCode || apiKey !== auth.config.apiKey) {
       toast.error(`Invalid key, Please check your URL.`);
@@ -62,7 +68,11 @@ const VerifyEmailPage = () => {
             Thank You for Verifying Your Email
           </h1>
           <p>
-            Congratulations! Your email address has been successfully verified.
+            Congratulations!{' '}
+            <span className={email ? 'font-semibold text-green-500' : ''}>
+              {email ? email : 'Your email address'}
+            </span>{' '}
+            has been successfully verified.
           </p>
           <p>
             Welcome to our community! You can now access all the features and
@@ -71,7 +81,7 @@ const VerifyEmailPage = () => {
           <Button
             variant="contained"
             color="success"
-            className="!min-w-[200px] h-[40px] !mt-[50px] max-w-[200px] w-full sm:w-auto !capitalize"
+            className="!min-w-[200px] h-[40px] !mt-[50px] max-w-[200px] !text-lg w-full sm:w-auto !capitalize"
             type="submit"
             onClick={() => navigate('/')}>
             Go to Homepage

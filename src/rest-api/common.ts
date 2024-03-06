@@ -9,3 +9,11 @@ export async function getSignedUrlApi(
   const { data } = await axios.get(url);
   return data;
 }
+
+export async function sendEmailVerification(
+  email: string
+): Promise<SignedUrlResponse> {
+  const url = `${environment.apiUrl}/firebase/verification-link/${email}`;
+  const { data } = await axios.get(url);
+  return data;
+}

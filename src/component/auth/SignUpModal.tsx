@@ -11,15 +11,15 @@ import Slide, { SlideProps } from '@mui/material/Slide';
 import TextField from '@mui/material/TextField';
 import { DialogContentText } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-} from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { Logger } from '../../helper/logger';
 import { toast } from 'react-toastify';
 import GenerateErrorText from '../@share/errorText';
 import { errorFormat } from '../../helper/error-format';
+import emailjs from 'emailjs-com';
+import { sendEmailVerification } from '../../rest-api/common';
+import environment from '../../environment';
 
 const log = new Logger('SignUpModal');
 
@@ -48,6 +48,7 @@ export default function SignUpModal({
   const onResponsive = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [email, setEmail] = useState('');
+  const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorText, setErrorText] = useState(' ');
@@ -66,11 +67,16 @@ export default function SignUpModal({
       const user = userCredential.user;
       const idToken = await user.getIdToken();
       if (user && idToken) {
-        await sendEmailVerification(user);
+        await updateProfile(user, {
+          displayName: userName,
+        });
+        const resp = await sendEmail();
         await auth.signOut();
-        emailOutput(email);
-        setOpenModal(false);
-        setOpenAfterSignUpModal(true);
+        if (resp) {
+          emailOutput(email);
+          onCloseModal();
+          setOpenAfterSignUpModal(true);
+        }
       } else {
         toast.error(`Something's wrong, Please try again.`);
       }
@@ -87,6 +93,34 @@ export default function SignUpModal({
     }
   };
 
+  const sendEmail = async () => {
+    try {
+      const link = await sendEmailVerification(email);
+      if (link) {
+        const resp = await emailjs.send(
+          'service_ipir5cd',
+          'template_8mfn5ci',
+          {
+            to_name: userName,
+            to_email: email,
+            verification_link: `${link.data}&userEmail=${email}`,
+          },
+          environment.emailjs.publicKey
+        );
+        if (resp.status === 200) {
+          return true;
+        }
+      } else {
+        toast.error(`Something's wrong, Please try again later.`);
+        return false;
+      }
+    } catch (error) {
+      log.error('Email sending failed:', error);
+      toast.error(`Something's wrong, Please try again later.`);
+      return false;
+    }
+  };
+
   const checkPassword = () => {
     if (password.length < 6) {
       setErrorText('Password should be at least 6 characters');
@@ -100,12 +134,26 @@ export default function SignUpModal({
     }
   };
 
+  const onCloseModal = () => {
+    setEmail('');
+    setUserName('');
+    setPassword('');
+    setConfirmPassword('');
+    setErrorText(' ');
+    setIsLoading(false);
+    setOpenModal(false);
+  };
+
   return (
     <Dialog
       fullWidth={onResponsive}
       TransitionComponent={Transition}
       open={openModal}
-      onClose={() => setOpenModal(false)}
+      onClose={() => {
+        if (!isLoading) {
+          onCloseModal();
+        }
+      }}
       aria-labelledby="responsive-dialog-title"
       PaperProps={{
         component: 'form',
@@ -125,6 +173,20 @@ export default function SignUpModal({
       <DialogContent className="flex flex-col justify-center items-center min-w-0 sm:min-w-[350px]">
         <TextField
           required
+          disabled={isLoading}
+          value={userName}
+          onChange={e => setUserName(e.currentTarget.value)}
+          margin="dense"
+          id="userName"
+          name="userName"
+          label="User Name"
+          type="text"
+          fullWidth
+          variant="standard"
+        />{' '}
+        <TextField
+          required
+          disabled={isLoading}
           value={email}
           onChange={e => setEmail(e.currentTarget.value)}
           margin="dense"
@@ -137,6 +199,7 @@ export default function SignUpModal({
         />{' '}
         <TextField
           required
+          disabled={isLoading}
           value={password}
           onChange={e => setPassword(e.currentTarget.value)}
           margin="dense"
@@ -149,6 +212,7 @@ export default function SignUpModal({
         />{' '}
         <TextField
           required
+          disabled={isLoading}
           value={confirmPassword}
           onChange={e => setConfirmPassword(e.currentTarget.value)}
           margin="dense"
@@ -166,10 +230,15 @@ export default function SignUpModal({
           <span className="!text-gray-800">Already have an account?</span>
           <span
             onClick={() => {
-              setOpenModal(false);
-              setOpenSignInModal(true);
+              if (!isLoading) {
+                onCloseModal();
+                setOpenSignInModal(true);
+              }
             }}
-            className="!text-primary-600 hover:!text-primary-800 transition cursor-pointer">
+            className={
+              (isLoading ? 'cursor-not-allowed ' : ' ') +
+              '!text-primary-600 hover:!text-primary-800 transition cursor-pointer'
+            }>
             Go to Sign In
           </span>
         </DialogContentText>
@@ -181,7 +250,7 @@ export default function SignUpModal({
             color="secondary"
             disabled={isLoading}
             className="!min-w-[100px] h-[40px] m-0 w-full sm:w-auto"
-            onClick={() => setOpenModal(false)}>
+            onClick={() => onCloseModal()}>
             Cancel
           </Button>
           <Button

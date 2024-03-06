@@ -56,15 +56,19 @@ export default function SignInModal({
   const onResponsive = useMediaQuery(theme.breakpoints.down('sm'));
 
   const signInWithGoogle = async () => {
+    let isCheckGoogle = true;
     try {
       setIsLoading(true);
+      setErrorText('Checking Gmail, Please wait a moment..');
+
       const resp = await signInWithPopup(auth, googleProvider);
       if (resp) {
         if (resp.user.emailVerified) {
           onSignIn();
         } else {
           await auth.signOut();
-          setErrorText('Please verify your email,');
+          setErrorText('Please verify your email');
+          isCheckGoogle = false;
         }
       } else {
         toast.error(`Something's wrong, Please try again.`);
@@ -77,6 +81,7 @@ export default function SignInModal({
       }
     } finally {
       setIsLoading(false);
+      isCheckGoogle && setErrorText(' ');
     }
   };
 
@@ -148,6 +153,7 @@ export default function SignInModal({
       <DialogContent className="flex flex-col justify-center items-center min-w-0 sm:min-w-[350px]">
         <TextField
           required
+          disabled={isLoading}
           margin="dense"
           id="email"
           name="email"
@@ -160,6 +166,7 @@ export default function SignInModal({
         />{' '}
         <TextField
           required
+          disabled={isLoading}
           margin="dense"
           id="password"
           name="password"
@@ -185,10 +192,17 @@ export default function SignInModal({
         </DialogContentText>
         <Button
           variant="outlined"
-          className="!min-w-[100px] !max-w-[193px] h-[40px] m-0 w-full sm:w-auto !border !border-gray-300 hover:!border-gray-600 !bg-white !text-gray-600 !mt-4 !rounded-full !capitalize"
+          className={
+            (isLoading
+              ? '!text-gray-400 !cursor-not-allowed '
+              : '!text-gray-600 hover:!border-gray-600 ') +
+            '!min-w-[100px] !max-w-[193px] h-[40px] m-0 w-full sm:w-auto !border !border-gray-300 !bg-white !mt-4 !rounded-full !capitalize'
+          }
           onClick={() => {
-            setErrorText(' ');
-            signInWithGoogle();
+            if (!isLoading) {
+              setErrorText(' ');
+              signInWithGoogle();
+            }
           }}>
           <FcGoogle className="me-2 text-xl" />
           Sign in with google
@@ -197,11 +211,16 @@ export default function SignInModal({
           <span className="!text-gray-800">Don't have an account?</span>
           <span
             onClick={() => {
-              setErrorText(' ');
-              setOpenModal(false);
-              setOpenSignUpModal(true);
+              if (!isLoading) {
+                setErrorText(' ');
+                setOpenModal(false);
+                setOpenSignUpModal(true);
+              }
             }}
-            className="!text-primary-600 hover:!text-primary-800 transition cursor-pointer">
+            className={
+              (isLoading ? 'cursor-not-allowed ' : ' ') +
+              '!text-primary-600 hover:!text-primary-800 transition cursor-pointer'
+            }>
             Create a your account
           </span>
         </DialogContentText>

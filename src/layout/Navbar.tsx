@@ -43,8 +43,8 @@ const AppNavbar: FC = function () {
             ) : (
               <>
                 <Button
-                  variant="contained"
-                  className="h-[32px] !min-w-[120px]"
+                  variant="outlined"
+                  className="h-[32px] !min-w-[120px] !rounded-full"
                   onClick={() => setOpenSignInModal(true)}>
                   <FaUser className="me-2" /> Sign in
                 </Button>

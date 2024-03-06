@@ -22,13 +22,14 @@ export default function UserMenu({ onOpenSignOutModal }: Props) {
     <div>
       <Button
         id="basic-button"
-        className="h-[32px] !min-w-[32px] !p-0"
+        className="h-[32px] !min-w-[32px] !p-0 !rounded-full"
         aria-controls={open ? 'basic-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}>
         <img
           src={defaultImages.noProfile}
+          draggable={false}
           className="object-cover h-[32px] w-[32px]"
           alt="user image"
         />
