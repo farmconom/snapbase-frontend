@@ -1,4 +1,4 @@
-import { NestHttpException } from './common';
+import { NestHttpException } from './common-type';
 
 export interface CommonAuthResponse {
   status: number;

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { JwtToken } from '../type/auth';
+import { JwtToken } from '../type/auth-type';
 
 const axiosServices = axios.create();
 

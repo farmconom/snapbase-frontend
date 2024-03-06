@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import { initializeAccountSuccess } from '../../redux/account';
 import { useDispatch } from '../../redux';
@@ -20,6 +20,9 @@ import { toast } from 'react-toastify';
 import { Logger } from '../../helper/logger';
 import CircularProgress from '@mui/material/CircularProgress';
 import GenerateErrorText from '../@share/errorText';
+import { sendEmailVerification } from '../../rest-api/auth-api';
+import emailjs from 'emailjs-com';
+import environment from '../../environment';
 
 const log = new Logger('SignInModal');
 
@@ -43,9 +46,11 @@ export default function SignInModal({
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');
+  const [emailResend, setEmailResend] = useState('');
   const [password, setPassword] = useState('');
   const [errorText, setErrorText] = useState(' ');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   const onSignIn = () => {
     dispatch(initializeAccountSuccess({ isSignIn: true }));
@@ -67,11 +72,11 @@ export default function SignInModal({
           onSignIn();
         } else {
           await auth.signOut();
-          setErrorText('Please verify your email');
+          setErrorText('Please verify your email,');
           isCheckGoogle = false;
         }
       } else {
-        toast.error(`Something's wrong, Please try again.`);
+        toast.error(`Something's wrong, Please try again later.`);
       }
       log.debug('sign in with Google', resp);
     } catch (error) {
@@ -88,6 +93,7 @@ export default function SignInModal({
   const signInWithEmail = async () => {
     try {
       setIsLoading(true);
+      setEmailResend(email);
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
@@ -102,7 +108,7 @@ export default function SignInModal({
           setErrorText('Please verify your email,');
         }
       } else {
-        toast.error(`Something's wrong, Please try again.`);
+        toast.error(`Something's wrong, Please try again later.`);
       }
     } catch (error) {
       const errorText: string = errorFormat(error).message;
@@ -119,11 +125,41 @@ export default function SignInModal({
     }
   };
 
-  //   const resendEmail = () => {
-  //     await sendEmailVerification(auth.);
-  //     await auth.signOut();
-  // toast.success('Send verification email successfully.')
-  //   }
+  const resendEmail = async () => {
+    try {
+      setIsSendingEmail(true);
+      const link = await sendEmailVerification(emailResend);
+      if (link.data) {
+        const resp = await emailjs.send(
+          'service_ipir5cd',
+          'template_8mfn5ci',
+          {
+            to_email: emailResend,
+            verification_link: `${link.data}&userEmail=${emailResend}`,
+          },
+          environment.emailjs.publicKey
+        );
+        if (resp.status === 200) {
+          toast.success(
+            `Send verification email to ${emailResend} successfully.`
+          );
+        }
+      } else {
+        toast.error(`Something's wrong, Please try again later.`);
+      }
+    } catch (error) {
+      log.error('Email sending failed:', error);
+      toast.error(`Something's wrong, Please try again later.`);
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
+  useEffect(() => {
+    if (emailResend !== email && errorText === 'Please verify your email,') {
+      setErrorText(' ');
+    }
+  }, [emailResend, email, errorText]);
 
   return (
     <Dialog
@@ -131,7 +167,7 @@ export default function SignInModal({
       TransitionComponent={Transition}
       open={openModal}
       onClose={() => {
-        if (!isLoading) {
+        if (!isLoading && !isSendingEmail) {
           setErrorText(' ');
           setOpenModal(false);
         }
@@ -155,7 +191,7 @@ export default function SignInModal({
       <DialogContent className="flex flex-col justify-center items-center min-w-0 sm:min-w-[350px]">
         <TextField
           required
-          disabled={isLoading}
+          disabled={isLoading || isSendingEmail}
           margin="dense"
           id="email"
           name="email"
@@ -168,7 +204,7 @@ export default function SignInModal({
         />{' '}
         <TextField
           required
-          disabled={isLoading}
+          disabled={isLoading || isSendingEmail}
           margin="dense"
           id="password"
           name="password"
@@ -183,9 +219,23 @@ export default function SignInModal({
           <GenerateErrorText text={errorText} onShow={errorText !== ' '} />
           {errorText === 'Please verify your email,' && (
             <span
-              // onClick={() => {}}
-              className="mt-2 text-sm text-red-500 hover:text-red-600 transition cursor-pointer underline">
+              onClick={() => resendEmail()}
+              className={
+                (isSendingEmail ? 'pointer-events-none' : '') +
+                ' mt-2 text-sm w-[110px] text-red-500 hover:text-red-600 transition-all cursor-pointer underline overflow-hidden relative'
+              }>
               Resend email
+              <span
+                className={
+                  (isSendingEmail ? 'opacity-100' : 'opacity-0') +
+                  ' absolute right-0 top-0 transition-all duration-500'
+                }>
+                <CircularProgress
+                  color="error"
+                  className="mt-[2px]"
+                  size={16}
+                />
+              </span>
             </span>
           )}
         </DialogContentText>
@@ -195,13 +245,13 @@ export default function SignInModal({
         <Button
           variant="outlined"
           className={
-            (isLoading
+            (isLoading || isSendingEmail
               ? '!text-gray-400 !cursor-not-allowed '
               : '!text-gray-600 hover:!border-gray-600 ') +
             '!min-w-[100px] !max-w-[193px] h-[40px] m-0 w-full sm:w-auto !border !border-gray-300 !bg-white !mt-4 !rounded-full !capitalize'
           }
           onClick={() => {
-            if (!isLoading) {
+            if (!isLoading && !isSendingEmail) {
               setErrorText(' ');
               signInWithGoogle();
             }
@@ -213,15 +263,17 @@ export default function SignInModal({
           <span className="!text-gray-800">Don't have an account?</span>
           <span
             onClick={() => {
-              if (!isLoading) {
+              if (!isLoading && !isSendingEmail) {
                 setErrorText(' ');
                 setOpenModal(false);
                 setOpenSignUpModal(true);
               }
             }}
             className={
-              (isLoading ? 'cursor-not-allowed ' : ' ') +
-              '!text-primary-600 hover:!text-primary-800 transition cursor-pointer'
+              (isLoading || isSendingEmail
+                ? 'cursor-not-allowed '
+                : 'cursor-pointer ') +
+              '!text-primary-600 hover:!text-primary-800 transition '
             }>
             Create a your account
           </span>
@@ -230,7 +282,7 @@ export default function SignInModal({
       <DialogActions style={{ padding: '16px 24px' }}>
         <div className="flex flex-wrap w-full justify-center sm:justify-end gap-2 border-0 !p-0">
           <Button
-            disabled={isLoading}
+            disabled={isLoading || isSendingEmail}
             variant="text"
             className="!min-w-[100px] h-[40px] m-0 w-full sm:w-auto"
             onClick={() => {
@@ -241,7 +293,7 @@ export default function SignInModal({
           </Button>
           <Button
             variant="contained"
-            disabled={isLoading}
+            disabled={isLoading || isSendingEmail}
             color="primary"
             className="!min-w-[100px] h-[40px] m-0 w-full sm:w-auto"
             type="submit">

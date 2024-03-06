@@ -18,9 +18,9 @@ import { toast } from 'react-toastify';
 import GenerateErrorText from '../@share/errorText';
 import { errorFormat } from '../../helper/error-format';
 import emailjs from 'emailjs-com';
-import { sendEmailVerification } from '../../rest-api/common';
 import environment from '../../environment';
 import PasswordStrengthBar from 'react-password-strength-bar';
+import { sendEmailVerification } from '../../rest-api/auth-api';
 
 const log = new Logger('SignUpModal');
 
@@ -59,7 +59,6 @@ export default function SignUpModal({
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
-    console.log(formValidation());
     if (formValidation()) return;
     try {
       setIsLoading(true);
@@ -83,7 +82,7 @@ export default function SignUpModal({
           setOpenAfterSignUpModal(true);
         }
       } else {
-        toast.error(`Something's wrong, Please try again.`);
+        toast.error(`Something's wrong, Please try again later.`);
       }
     } catch (error) {
       const errorText: string = errorFormat(error).message;
@@ -101,7 +100,7 @@ export default function SignUpModal({
   const sendEmail = async () => {
     try {
       const link = await sendEmailVerification(email);
-      if (link) {
+      if (link.data) {
         const resp = await emailjs.send(
           'service_ipir5cd',
           'template_8mfn5ci',
@@ -291,8 +290,8 @@ export default function SignUpModal({
               }
             }}
             className={
-              (isLoading ? 'cursor-not-allowed ' : ' ') +
-              '!text-primary-600 hover:!text-primary-800 transition cursor-pointer'
+              (isLoading ? 'cursor-not-allowed ' : 'cursor-pointer ') +
+              '!text-primary-600 hover:!text-primary-800 transition'
             }>
             Go to Sign In
           </span>

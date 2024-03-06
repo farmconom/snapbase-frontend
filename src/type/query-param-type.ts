@@ -7,9 +7,5 @@ export type QueryParamsPage = {
   page: number;
   keyword?: string;
   orderBy?: string;
-  isDisputed?: string;
-  isConfirmed?: string;
-  tag?: string;
-  type?: string;
   status?: string;
 };

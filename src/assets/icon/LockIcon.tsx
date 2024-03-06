@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { SvgDimension } from '../../type/common';
+import { SvgDimension } from '../../type/common-type';
 
 const LockIcon: FC<SvgDimension> = ({ width, height }) => {
   return (

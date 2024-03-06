@@ -1,5 +1,5 @@
 import environment from '../environment';
-import { getSignedUrlApi } from '../rest-api/common';
+import { getSignedUrlApi } from '../rest-api/common-api';
 
 export const uploadBatchFile = async (files: File[]) => {
   // const urls = await Promise.all(

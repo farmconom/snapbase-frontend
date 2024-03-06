@@ -1,4 +1,4 @@
-import { QueryParams } from '../type/query-param';
+import { QueryParams } from '../type/query-param-type';
 
 export const queryParamsToUrl = (params?: QueryParams, isAnd?: boolean) => {
   if (!params) return '';
