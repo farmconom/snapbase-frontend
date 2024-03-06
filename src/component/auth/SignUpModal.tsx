@@ -24,6 +24,8 @@ import PasswordStrengthBar from 'react-password-strength-bar';
 
 const log = new Logger('SignUpModal');
 
+const nameRegex = /[^!@#$%^&*()_+={}[\]:;"'<>,.?/\\|`~-]*/g;
+
 type Props = {
   openModal: boolean;
   setOpenModal: Dispatch<SetStateAction<boolean>>;
@@ -57,7 +59,8 @@ export default function SignUpModal({
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (checkPassword()) return;
+    console.log(formValidation());
+    if (formValidation()) return;
     try {
       setIsLoading(true);
       const userCredential = await createUserWithEmailAndPassword(
@@ -123,8 +126,20 @@ export default function SignUpModal({
     }
   };
 
-  const checkPassword = () => {
-    if (password.length < 6) {
+  const formValidation = () => {
+    if (
+      userName &&
+      userName.match(nameRegex) &&
+      !!userName.match(nameRegex)?.length
+    ) {
+      if (userName.match(nameRegex)!.filter(item => item === '').length > 1) {
+        setErrorText('User name format is incorrect');
+        return true;
+      } else if (userName.length < 3) {
+        setErrorText('User name should be at least 3 characters');
+        return true;
+      }
+    } else if (password.length < 6) {
       setErrorText('Password should be at least 6 characters');
       return true;
     } else if (password !== confirmPassword) {

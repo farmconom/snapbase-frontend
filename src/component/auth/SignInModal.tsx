@@ -131,8 +131,10 @@ export default function SignInModal({
       TransitionComponent={Transition}
       open={openModal}
       onClose={() => {
-        setErrorText(' ');
-        setOpenModal(false);
+        if (!isLoading) {
+          setErrorText(' ');
+          setOpenModal(false);
+        }
       }}
       aria-labelledby="responsive-dialog-title"
       PaperProps={{
@@ -228,6 +230,7 @@ export default function SignInModal({
       <DialogActions style={{ padding: '16px 24px' }}>
         <div className="flex flex-wrap w-full justify-center sm:justify-end gap-2 border-0 !p-0">
           <Button
+            disabled={isLoading}
             variant="text"
             className="!min-w-[100px] h-[40px] m-0 w-full sm:w-auto"
             onClick={() => {
