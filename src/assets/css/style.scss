@@ -60,6 +60,19 @@ body {
   border-top-right-radius: 5px;
 }
 
+.password-strength-bar {
+  p {
+    position: absolute;
+    right: 0;
+    top: -60px;
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    font-weight: 400;
+    font-size: 12px !important;
+    line-height: 1.4375em;
+    letter-spacing: 0.00938em;
+  }
+}
+
 // window sm size
 @media screen and (max-width: 599px) {
   .MuiDialog-container {

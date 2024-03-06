@@ -20,6 +20,7 @@ import { errorFormat } from '../../helper/error-format';
 import emailjs from 'emailjs-com';
 import { sendEmailVerification } from '../../rest-api/common';
 import environment from '../../environment';
+import PasswordStrengthBar from 'react-password-strength-bar';
 
 const log = new Logger('SignUpModal');
 
@@ -51,6 +52,7 @@ export default function SignUpModal({
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [scoreWordColor, setScoreWordColor] = useState('#ddd');
   const [errorText, setErrorText] = useState(' ');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -134,6 +136,29 @@ export default function SignUpModal({
     }
   };
 
+  const settingScoreWordColor = (score: number) => {
+    switch (score) {
+      case 0:
+        setScoreWordColor('#a6a6a6');
+        break;
+      case 1:
+        setScoreWordColor('#ef4836');
+        break;
+      case 2:
+        setScoreWordColor('#eca93e');
+        break;
+      case 3:
+        setScoreWordColor('#2b90ef');
+        break;
+      case 4:
+        setScoreWordColor('#25c281');
+        break;
+      default:
+        setScoreWordColor('#a6a6a6');
+        break;
+    }
+  };
+
   const onCloseModal = () => {
     setEmail('');
     setUserName('');
@@ -210,6 +235,21 @@ export default function SignUpModal({
           fullWidth
           variant="standard"
         />{' '}
+        <div
+          className={
+            (password ? 'h-[7px]' : 'h-[1px]') + ' w-full transition-all'
+          }>
+          <PasswordStrengthBar
+            onChangeScore={score => settingScoreWordColor(score)}
+            scoreWordStyle={{ color: scoreWordColor }}
+            password={password}
+            minLength={6}
+            className={
+              (password ? 'opacity-100' : 'opacity-0') +
+              ' w-full text-center password-strength-bar'
+            }
+          />
+        </div>
         <TextField
           required
           disabled={isLoading}
