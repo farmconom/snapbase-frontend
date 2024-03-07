@@ -78,7 +78,6 @@ export default function SignInModal({
           if (user.status === 200 && !user.data.emailVerified) {
             const newUser = user.data;
             newUser.emailVerified = true;
-            console.log(newUser);
             await updateUserByIdApi(newUser);
           }
           onSignIn(resp.user);
@@ -118,7 +117,6 @@ export default function SignInModal({
           if (user.status === 200 && !user.data.emailVerified) {
             const newUser = user.data;
             newUser.emailVerified = true;
-            console.log(newUser);
             await updateUserByIdApi(newUser);
           }
           onSignIn(userCredential.user);
