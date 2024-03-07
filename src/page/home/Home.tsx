@@ -1,6 +1,9 @@
+import { useSelector } from '../../redux';
 import { getUsersApi } from '../../rest-api/user-api';
 
 export default function Home() {
+  const { user } = useSelector(state => state.account);
+  console.log(user);
   const getUser = async () => {
     try {
       const resp = await getUsersApi();

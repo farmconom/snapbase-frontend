@@ -18,6 +18,12 @@ export type ResponseInfo = {
   message: string;
 };
 
+export type ResponseInfoBoolean = {
+  status: number;
+  message: string;
+  data: boolean;
+};
+
 export type SignedUrlResponse = ResponseInfo & {
   data: string;
 };

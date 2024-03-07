@@ -1,12 +1,14 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { User } from 'firebase/auth';
 
 export type AccountReducerState = {
-  // user: User | null;
+  user: User | null;
   isSignIn: boolean;
   error: boolean;
 };
 
 const initialState: AccountReducerState = {
+  user: null,
   isSignIn: false,
   error: false,
 };
@@ -18,13 +20,16 @@ const accountSlice = createSlice({
     initializeAccountSuccess: (
       state,
       action: PayloadAction<{
+        user: User | null;
         isSignIn: boolean;
       }>
     ) => ({
       ...state,
+      user: action.payload.user,
       isSignIn: action.payload.isSignIn,
     }),
     initializeAccountFailure: () => ({
+      user: null,
       isSignIn: false,
       error: true,
     }),

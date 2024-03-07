@@ -13,7 +13,11 @@ import Slide, { SlideProps } from '@mui/material/Slide';
 import TextField from '@mui/material/TextField';
 import { FcGoogle } from 'react-icons/fc';
 import { DialogContentText } from '@mui/material';
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import {
+  User,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from 'firebase/auth';
 import { auth, googleProvider } from '../../firebase';
 import { errorFormat } from '../../helper/error-format';
 import { toast } from 'react-toastify';
@@ -23,6 +27,7 @@ import GenerateErrorText from '../@share/errorText';
 import { sendEmailVerification } from '../../rest-api/auth-api';
 import emailjs from 'emailjs-com';
 import environment from '../../environment';
+import { getUserByIdApi, updateUserByIdApi } from '../../rest-api/user-api';
 
 const log = new Logger('SignInModal');
 
@@ -52,8 +57,8 @@ export default function SignInModal({
   const [isLoading, setIsLoading] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
 
-  const onSignIn = () => {
-    dispatch(initializeAccountSuccess({ isSignIn: true }));
+  const onSignIn = (initUser: User) => {
+    dispatch(initializeAccountSuccess({ isSignIn: true, user: initUser }));
     setErrorText(' ');
     setOpenModal(false);
   };
@@ -69,7 +74,14 @@ export default function SignInModal({
       const resp = await signInWithPopup(auth, googleProvider);
       if (resp) {
         if (resp.user.emailVerified) {
-          onSignIn();
+          const user = await getUserByIdApi(resp.user.uid);
+          if (user.status === 200 && !user.data.emailVerified) {
+            const newUser = user.data;
+            newUser.emailVerified = true;
+            console.log(newUser);
+            await updateUserByIdApi(newUser);
+          }
+          onSignIn(resp.user);
         } else {
           await auth.signOut();
           setErrorText('Please verify your email,');
@@ -102,7 +114,14 @@ export default function SignInModal({
       log.info('sign in userCredential', userCredential);
       if (userCredential) {
         if (userCredential.user.emailVerified) {
-          onSignIn();
+          const user = await getUserByIdApi(userCredential.user.uid);
+          if (user.status === 200 && !user.data.emailVerified) {
+            const newUser = user.data;
+            newUser.emailVerified = true;
+            console.log(newUser);
+            await updateUserByIdApi(newUser);
+          }
+          onSignIn(userCredential.user);
         } else {
           await auth.signOut();
           setErrorText('Please verify your email,');

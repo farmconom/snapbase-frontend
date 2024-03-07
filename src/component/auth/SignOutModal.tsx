@@ -29,7 +29,7 @@ export default function SignOutModal({ openModal, setOpenModal }: Props) {
   const onSignOut = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    dispatch(initializeAccountSuccess({ isSignIn: false }));
+    dispatch(initializeAccountSuccess({ isSignIn: false, user: null }));
     setOpenModal(false);
   };
   const theme = useTheme();

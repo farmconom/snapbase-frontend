@@ -21,6 +21,8 @@ import emailjs from 'emailjs-com';
 import environment from '../../environment';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import { sendEmailVerification } from '../../rest-api/auth-api';
+import { cerateUserApi } from '../../rest-api/user-api';
+import { convertUserDataForCreate } from '../../helper/convert-user-data';
 
 const log = new Logger('SignUpModal');
 
@@ -67,10 +69,14 @@ export default function SignUpModal({
         email,
         password
       );
+
       log.info('sign up userCredential', userCredential);
       const user = userCredential.user;
+      const userCreated = await cerateUserApi(
+        convertUserDataForCreate(user, userName)
+      );
       const idToken = await user.getIdToken();
-      if (user && idToken) {
+      if (user && idToken && userCreated.status === 200) {
         await updateProfile(user, {
           displayName: userName,
         });
@@ -80,6 +86,10 @@ export default function SignUpModal({
           emailOutput(email);
           onCloseModal();
           setOpenAfterSignUpModal(true);
+        } else {
+          toast.error(
+            `Error to send email validation, Please try again later.`
+          );
         }
       } else {
         toast.error(`Something's wrong, Please try again later.`);
