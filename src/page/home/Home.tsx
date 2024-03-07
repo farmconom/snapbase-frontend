@@ -1,18 +1,4 @@
-import { useSelector } from '../../redux';
-import { getUsersApi } from '../../rest-api/user-api';
-
 export default function Home() {
-  const { user } = useSelector(state => state.account);
-  console.log(user);
-  const getUser = async () => {
-    try {
-      const resp = await getUsersApi();
-      console.log(resp);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
     <>
       <div className="hero-main rounded-none sm:rounded-[12px] px-[24px] pt-[24px] pb-[32px] flex justify-center items-center flex-col max-sm:mt-[-19px]">
@@ -28,7 +14,6 @@ export default function Home() {
           tempore. Error ratione quos velit ex asperiores, sit saepe eaque
           nihil? Iure temporibus quisquam saepe?
         </p>
-        <button onClick={() => getUser()}>test api</button>
       </div>
     </>
   );
